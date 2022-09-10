@@ -4,24 +4,50 @@ const msort = (arr) => {
     }
 
     const half = Math.ceil(arr.length / 2);
-    const leftHalf = arr.slice(0, half);
-    const rigthHalf = arr.slice(half);
-
-    msort(leftHalf);
-    msort(rigthHalf);
+    const leftHalf = msort(arr.slice(0, half));
+    const rigthHalf = msort(arr.slice(half));
 
     const newArr = [];
-    for (let i = 0; i < half; i++) {
-        if (leftHalf[i] < rigthHalf[i]) {
-            newArr.push(leftHalf[i]);
-            newArr.push(rigthHalf[i]);
-        } else {
-            newArr.push(rigthHalf[i]);
-            newArr.push(leftHalf[i]);
-        }
-    }
 
+    const merge = (leftIndex, rightIndex) => {
+        if (leftIndex >= half || rightIndex >= half) {
+            if (leftIndex >= half) {
+                for (let i = rightIndex; i < half; i++) {
+                    newArr.push(rigthHalf[i]);
+
+                    return;
+                }
+            } else {
+                for (let i = leftIndex; i < half; i++) {
+                    newArr.push(leftHalf[i]);
+
+                    return;
+                }
+            }
+        }
+
+        if (leftHalf.length === 1) {
+            if (leftHalf[0] < rigthHalf[0]) {
+                newArr.push(leftHalf[0]);
+                newArr.push(rigthHalf[0]);
+
+                return;
+            } else {
+                newArr.push(rigthHalf[0]);
+                newArr.push(leftHalf[0]);
+
+                return;
+            }
+        }
+        if (leftHalf[leftIndex] < rigthHalf[rightIndex]) {
+            newArr.push(leftHalf[leftIndex]);
+            merge(leftIndex + 1, rightIndex);
+        } else {
+            newArr.push(rigthHalf[rightIndex]);
+            merge(leftIndex, rightIndex + 1);
+        }
+    };
+
+    merge(0, 0);
     return newArr;
 };
-
-msort([4, 6, 5, 1, 3, 2, 8, 7]);
